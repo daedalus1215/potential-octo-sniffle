@@ -3,15 +3,14 @@
     <base-card>
       <h2>Submitted Experiences</h2>
       <div>
-        <base-button>Load Submitted Experiences</base-button>
+        <base-button @click="loadExperiences">Load Submitted Experiences</base-button>
       </div>
-      <ul>
-        <survey-result
-          v-for="result in results"
-          :key="result.id"
-          :name="result.name"
-          :rating="result.rating"
-        ></survey-result>
+      <p v-if="isLoading">Loading...</p>
+      <p v-else-if="!isLoading && error !== null">Something went wrong</p>
+      <p v-else-if="!isLoading && !results?.length">No stored experiences found.</p>
+      <ul v-else-if="!isLoading && results?.length > 0">
+        <survey-result v-for="result in results" :key="result.id" :name="result.name"
+          :rating="result.rating"></survey-result>
       </ul>
     </base-card>
   </section>
@@ -25,6 +24,38 @@ export default {
   components: {
     SurveyResult,
   },
+  data() {
+    return {
+      results: [],
+      isLoading: false,
+      error: null
+    }
+  },
+  methods: {
+    loadExperiences() {
+      this.isLoading = true;
+      this.error = null;
+      // @TODO Clean this up
+      fetch('http://localhost:3000/surveys')
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+        }).then((data) => {
+          this.isLoading = false;
+          const results = [];
+          for (const id in data) {
+            results.push({ id: id, name: data[id].name, rating: data[id].rating })
+          }
+          this.results = results;
+        }).catch((err) => {
+          this.error = 'Failed to fetch data - please try again'
+        });
+    },
+    mounted() {
+      this.loadExperiences();
+    }
+  }
 };
 </script>
 
