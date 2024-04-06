@@ -30,6 +30,7 @@
           v-if="invalidInput"
         >One or more input fields are invalid. Please check your provided data.</p>
         <div>
+          <button type="submit">ddsad</button>
           <base-button>Submit</base-button>
         </div>
       </form>
@@ -49,6 +50,7 @@ export default {
   // emits: ['survey-submit'],
   methods: {
     submitSurvey() {
+      console.log('hi there')
       if (this.enteredName === '' || !this.chosenRating) {
         this.invalidInput = true;
         return;
@@ -63,7 +65,7 @@ export default {
         },
         body: JSON.stringify({
           name: this.enteredName,
-          rarting: this.chosenRating
+          rating: this.chosenRating
         })
       });
 

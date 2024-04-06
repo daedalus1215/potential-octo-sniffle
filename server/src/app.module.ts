@@ -1,22 +1,19 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TodoModule } from './todo/todo.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TodoCategory, TodoCategorySchema } from './todo/entity/todo-category.schema';
+import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { SurveysModule } from './surveys/surveys.module';
+import { Survey, SurveySchema } from './surveys/entity/survey.schema';
 
 @Module({
   imports: [
     MongooseModule.forRoot('mongodb://localhost/test'),
-    MongooseModule.forFeature([{name: TodoCategory.name, schema: TodoCategorySchema}]),
+    MongooseModule.forFeature([{ name: Survey.name, schema: SurveySchema }]),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`,
     }),
-    TodoModule,
     SurveysModule
   ],
   controllers: [AppController],
