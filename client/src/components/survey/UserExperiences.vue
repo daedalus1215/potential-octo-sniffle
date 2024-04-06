@@ -5,7 +5,9 @@
       <div>
         <base-button @click="loadExperiences">Load Submitted Experiences</base-button>
       </div>
-      <ul>
+      <p v-if="isLoading">Loading...</p>
+      <p v-else-if="!isLoading && !results?.length">No stored experiences found.</p>
+      <ul v-else-if="!isLoading && results?.length > 0">
         <survey-result v-for="result in results" :key="result.id" :name="result.name"
           :rating="result.rating"></survey-result>
       </ul>
@@ -23,12 +25,13 @@ export default {
   },
   data() {
     return {
-      results: []
+      results: [],
+      isLoading: false,
     }
   },
   methods: {
     loadExperiences() {
-      console.log('load experiences')
+      this.isLoading = true;
       // @TODO Clean this up
       fetch('http://localhost:3000/surveys')
         .then((response) => {
@@ -36,12 +39,16 @@ export default {
             return response.json();
           }
         }).then((data) => {
+          this.isLoading = false;
           const results = [];
           for (const id in data) {
             results.push({ id: id, name: data[id].name, rating: data[id].rating })
           }
           this.results = results;
         });
+    },
+    mounted() {
+      this.loadExperiences();
     }
   }
 };
