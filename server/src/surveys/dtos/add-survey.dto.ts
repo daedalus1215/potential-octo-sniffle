@@ -1,6 +1,6 @@
 import { Expose } from "class-transformer";
 
-export class CreateTodoCategoryDto {
+export class AddSurveyDto {
     @Expose()
     name: string;
 
